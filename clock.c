@@ -172,7 +172,6 @@ void helpMenu()
     printf("c -> toggle 24h/12h\n");
     printf("a -> set alarm\n");
     printf("d -> remove alarm\n");
-    printf("s -> toggle stopwatch (not implmented yet)\n");
 }
 
 // =============================================================
