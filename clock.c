@@ -44,67 +44,55 @@ void delAlarm(int* haveAlarm);
 // =============================================================
 // =                        Main Function                      =
 // =============================================================
-int main()
-{
-    while (1)
-    {
+int main() {
+    while (1) {
         // clear console
         system("cls");
 
         // setting alarm
-        if (needAlarm)
-        {
+        if (needAlarm) {
             setAlarm(&clockType);
             needAlarm = 0;
             haveAlarm = 1;
         }
         // replace to help menu
-        else if (showHelp)
-        {
+        else if (showHelp) {
             helpMenu();
         }
 
         // time
-        else
-        {
+        else {
             // Get current date and time
             currentDateTime(&clockType, date, &hour, &min, &sec, am_pm);
             printf("Press 'h' for menu :D\n");
             printf("%s", date);
 
             // Print time based on clock type
-            if (clockType == 0)
-            {
+            if (clockType == 0) {
                 printf("Time: %02d:%02d:%02d\n", hour, min, sec);
             }
-            else
-            {
+            else {
                 printf("Time: %02d:%02d:%02d %s\n", hour, min, sec, am_pm);
             }
 
-            if (info.isSet == 1)
-            {
+            if (info.isSet == 1) {
                 if (info.alarmHour == hour && info.alarmMin == min) {
                     printf("ALARM: %s", info.alarmMessage);
                 }
-                if (strcmp(info.clockType, "XX") == 0)
-                {
+                if (strcmp(info.clockType, "XX") == 0) {
                     printf("\n(24 hour)\nAlarm: %02d:%02d\nMessage: %s\n", info.alarmHour, info.alarmMin, info.alarmMessage);
                 }
-                else
-                {
+                else {
                     printf("\n(12 hour)\nAlarm: %02d:%02d %s\nMessage: %s\n", info.alarmHour, info.alarmMin, info.clockType, info.alarmMessage);
                 }
             }
-            else
-            {
+            else {
                 printf("\nNo alarm set. 'a' to set\n");
             }
         }
 
         // check if a key has been pressed
-        if (_kbhit())
-        {
+        if (_kbhit()) {
             // read the input character
             char key = _getch();
             userInput(&key, &showHelp, &clockType, &needAlarm, &haveAlarm);
@@ -118,16 +106,14 @@ int main()
 // =============================================================
 // =                      currentDateTime                      =
 // =============================================================
-void currentDateTime(int *clockType, char *dateBuffer, int *hour, int *min, int *sec, char *am_pm)
-{
+void currentDateTime(int *clockType, char *dateBuffer, int *hour, int *min, int *sec, char *am_pm) {
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
 
     // Store the date in dateBuffer
     sprintf(dateBuffer, "Date: %d-%02d-%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
 
-    switch (*clockType)
-    {
+    switch (*clockType) {
     // 24-hour clock
     case 0:
         *hour = tm.tm_hour;
@@ -139,19 +125,15 @@ void currentDateTime(int *clockType, char *dateBuffer, int *hour, int *min, int 
     // 12-hour clock
     case 1:
         *hour = tm.tm_hour;
-        if (*hour >= 12)
-        {
+        if (*hour >= 12) {
             strcpy(am_pm, "PM");
-            if (*hour > 12)
-            {
+            if (*hour > 12) {
                 *hour -= 12;
             }
         }
-        else
-        {
+        else {
             strcpy(am_pm, "AM");
-            if (*hour == 0)
-            {
+            if (*hour == 0) {
                 *hour = 12; // midnight
             }
         }
@@ -164,8 +146,7 @@ void currentDateTime(int *clockType, char *dateBuffer, int *hour, int *min, int 
 // =============================================================
 // =                         helpMenu                          =
 // =============================================================
-void helpMenu()
-{
+void helpMenu() {
     printf("Menu:\n");
     printf("h -> toggle help menu\n");
     printf("q -> exit clock\n");
@@ -177,16 +158,13 @@ void helpMenu()
 // =============================================================
 // =                    confirmingAlarm                        =
 // =============================================================
-void confirmingAlarm(struct alarmInfo info)
-{
+void confirmingAlarm(struct alarmInfo info) {
     // clear console
     system("cls");
-    if (strcmp(info.clockType, "XX") != 0)
-    {
+    if (strcmp(info.clockType, "XX") != 0) {
         printf("Alarm set: %02d:%02d %s", info.alarmHour, info.alarmMin, info.clockType);
     }
-    else
-    {
+    else {
         printf("Alarm set: %02d:%02d", info.alarmHour, info.alarmMin);
     }
     printf("\nMessage: %s\n", info.alarmMessage);
@@ -206,12 +184,10 @@ void messageContent(int *alarmHour, int *alarmMin, char clockType[3]) {
     scanf("%99s", alarmMessage);
 
     // Check if the message is too long
-    if (strlen(alarmMessage) >= 100)
-    {
+    if (strlen(alarmMessage) >= 100) {
         printf("Error: The message is too long! Please enter a shorter message.\n");
     }
-    else
-    {
+    else {
         printf("Setting alarm...");
         info.alarmHour = *alarmHour;
         info.alarmMin = *alarmMin;
@@ -225,8 +201,7 @@ void messageContent(int *alarmHour, int *alarmMin, char clockType[3]) {
 // =============================================================
 // =                       setAlarm12                          =
 // =============================================================
-void setAlarm12()
-{
+void setAlarm12() {
     int alarmHour = 0;
     int alarmMin = 0;
     char clockType[3] = "AM";
@@ -240,61 +215,49 @@ void setAlarm12()
     int showMin = 1;
     int showType = 1;
 
-    while (!confirmAlarm)
-    {
+    while (!confirmAlarm) {
         // clear console
         system("cls");
 
         printf("Press 'a' to stop, arrow buttons to move, [ENTER] to set alarm\n");
 
         // display time (blinking effect)
-        if (place == 0)
-        {
-            if (showHour)
-            {
+        if (place == 0) {
+            if (showHour) {
                 printf("%02d:%02d %s\n", alarmHour, alarmMin, clockType);
                 printf("Editing Hour...\n");
             }
-            else
-            {
+            else {
                 printf("--:%02d %s\n", alarmMin, clockType);
                 printf("Editing Hour...\n");
             }
         }
-        else if (place == 1)
-        {
-            if (showMin)
-            {
+        else if (place == 1) {
+            if (showMin) {
                 printf("%02d:%02d %s\n", alarmHour, alarmMin, clockType);
                 printf("Editing Minutes...\n");
             }
-            else
-            {
+            else {
                 printf("%02d:-- %s\n", alarmHour, clockType);
                 printf("Editing Minutes...\n");
             }
         }
-        else
-        {
-            if (showType)
-            {
+        else {
+            if (showType) {
                 printf("%02d:%02d %s\n", alarmHour, alarmMin, clockType);
                 printf("Editing Clock...\n");
             }
-            else
-            {
+            else {
                 printf("%02d:%02d --\n", alarmHour, alarmMin);
                 printf("Editing Clock...\n");
             }
         }
 
         // handle input
-        if (_kbhit())
-        {
+        if (_kbhit()) {
             // get input
             char key = _getch();
-            switch (key)
-            {
+            switch (key) {
             case 'a':
                 confirmAlarm = 1;
                 break;
@@ -315,56 +278,43 @@ void setAlarm12()
                 return;
 
             // up arrow
-            case 0x48:
-            {
-                if (place == 0)
-                {
-                    if (alarmHour == 11 && strcmp(clockType, "PM") == 0)
-                    {
+            case 0x48: {
+                if (place == 0) {
+                    if (alarmHour == 11 && strcmp(clockType, "PM") == 0) {
                         alarmHour = 0;
                         strcpy(clockType, "AM");
                     }
-                    else if (alarmHour == 11 && strcmp(clockType, "AM") == 0)
-                    {
+                    else if (alarmHour == 11 && strcmp(clockType, "AM") == 0) {
                         alarmHour = 12;
                         strcpy(clockType, "PM");
                     }
-                    else
-                    {
+                    else {
                         alarmHour = (alarmHour + 1) % 12;
                     }
                 }
-                else if (place == 1)
-                {
+                else if (place == 1) {
                     {
-                        if (alarmMin == 59)
-                        {
+                        if (alarmMin == 59) {
                             alarmMin = 0;
                         }
-                        else
-                        {
+                        else {
                             alarmMin += 1 % 60;
                         }
                     }
                 }
-                else
-                {
-                    if (alarmHour == 0 && strcmp(clockType, "AM") == 0)
-                    {
+                else {
+                    if (alarmHour == 0 && strcmp(clockType, "AM") == 0) {
                         alarmHour = 12;
                         strcpy(clockType, "PM");
                     }
-                    else if (alarmHour == 12 && strcmp(clockType, "PM") == 0)
-                    {
+                    else if (alarmHour == 12 && strcmp(clockType, "PM") == 0) {
                         alarmHour = 0;
                         strcpy(clockType, "AM");
                     }
-                    else if (strcmp(clockType, "PM") == 0)
-                    {
+                    else if (strcmp(clockType, "PM") == 0) {
                         strcpy(clockType, "AM");
                     }
-                    else
-                    {
+                    else {
                         strcpy(clockType, "PM");
                     }
                 }
@@ -373,35 +323,28 @@ void setAlarm12()
 
             // down arrow
             case 0x50:
-                if (place == 0)
-                {
-                    if (alarmHour == 0 && strcmp(clockType, "AM") == 0)
-                    {
+                if (place == 0) {
+                    if (alarmHour == 0 && strcmp(clockType, "AM") == 0) {
                         alarmHour = 11;
                         strcpy(clockType, "PM");
                     }
-                    else if (alarmHour == 12 && strcmp(clockType, "PM") == 0)
-                    {
+                    else if (alarmHour == 12 && strcmp(clockType, "PM") == 0) {
                         alarmHour = 11;
                         strcpy(clockType, "AM");
                     }
-                    else if (alarmHour == 1 && strcmp(clockType, "PM") == 0)
-                    {
+                    else if (alarmHour == 1 && strcmp(clockType, "PM") == 0) {
                         alarmHour = 11;
                         strcpy(clockType, "AM");
                     }
-                    else if (alarmHour == 0 && strcmp(clockType, "AM") == 0)
-                    {
+                    else if (alarmHour == 0 && strcmp(clockType, "AM") == 0) {
                         alarmHour = 12;
                         strcpy(clockType, "PM");
                     }
-                    else
-                    {
+                    else {
                         alarmHour = (alarmHour - 1) % 12;                        
                     }
                 }
-                else if (place == 1)
-                {
+                else if (place == 1) {
                     {   
                         if (alarmMin == 0) {
                             alarmMin = 59;
@@ -411,24 +354,19 @@ void setAlarm12()
                         }
                     }
                 }
-                else
-                {
-                    if (alarmHour == 0 && strcmp(clockType, "AM") == 0)
-                    {
+                else {
+                    if (alarmHour == 0 && strcmp(clockType, "AM") == 0) {
                         alarmHour = 12;
                         strcpy(clockType, "PM");
                     }
-                    else if (alarmHour == 12 && strcmp(clockType, "PM") == 0)
-                    {
+                    else if (alarmHour == 12 && strcmp(clockType, "PM") == 0) {
                         alarmHour = 0;
                         strcpy(clockType, "AM");
                     }
-                    else if (strcmp(clockType, "PM") == 0)
-                    {
+                    else if (strcmp(clockType, "PM") == 0) {
                         strcpy(clockType, "AM");
                     }
-                    else
-                    {
+                    else {
                         strcpy(clockType, "PM");
                     }
                 }
@@ -436,16 +374,14 @@ void setAlarm12()
 
             // left arrow
             case 0x4B:
-                if (place != 0)
-                {
+                if (place != 0) {
                     place -= 1;
                 }
                 break;
 
             // right arrow
             case 0x4D:
-                if (place != 2)
-                {
+                if (place != 2) {
                     place += 1;
                 }
                 break;
@@ -454,19 +390,15 @@ void setAlarm12()
 
         // if it's time to blink
         DWORD currentTime = GetTickCount();
-        if (currentTime - lastBlinkTime > blinkInterval)
-        {
+        if (currentTime - lastBlinkTime > blinkInterval) {
             lastBlinkTime = currentTime;
-            if (place == 0)
-            {
+            if (place == 0) {
                 showHour = !showHour; // blink hour
             }
-            else if (place == 1)
-            {
+            else if (place == 1) {
                 showMin = !showMin; // blink min
             }
-            else
-            {
+            else {
                 showType = !showType; // blink type
             }
         }
@@ -479,8 +411,7 @@ void setAlarm12()
 // =============================================================
 // =                       setAlarm24                          =
 // =============================================================
-void setAlarm24()
-{
+void setAlarm24() {
     int alarmHour = 0;
     int alarmMin = 0;
     int confirmAlarm = 0;
@@ -492,48 +423,39 @@ void setAlarm24()
     int showHour = 1; // show, 0=hide
     int showMin = 1;
 
-    while (!confirmAlarm)
-    {
+    while (!confirmAlarm) {
         // clear console
         system("cls");
 
         printf("Press 'a' to stop, arrow buttons to move, [ENTER] to set alarm\n");
 
         // display time (blinking effect)
-        if (place == 0)
-        {
-            if (showHour)
-            {
+        if (place == 0) {
+            if (showHour) {
                 printf("%02d:%02d\n", alarmHour, alarmMin);
                 printf("Editing Hour...\n");
             }
-            else
-            {
+            else {
                 printf("--:%02d\n", alarmMin);
                 printf("Editing Hour...\n");
             }
         }
-        else
-        {
-            if (showMin)
-            {
+        else {
+            if (showMin) {
                 printf("%02d:%02d\n", alarmHour, alarmMin);
                 printf("Editing Minutes...\n");
             }
-            else
-            {
+            else {
                 printf("%02d:--\n", alarmHour);
                 printf("Editing Minutes...\n");
             }
         }
 
         // handle input
-        if (_kbhit())
-        {
+        if (_kbhit()) {
             // get input
             char key = _getch();
-            switch (key)
-            {
+            switch (key) {
             case 'a':
                 confirmAlarm = 1;
                 break;
@@ -555,20 +477,15 @@ void setAlarm24()
                 return;
 
             // up arrow
-            case 0x48:
-            {
-                if (place == 0)
-                {
+            case 0x48: {
+                if (place == 0) {
                     alarmHour = (alarmHour + 1) % 24;
                 }
-                else
-                {
-                    if (alarmMin == 59)
-                    {
+                else {
+                    if (alarmMin == 59) {
                         alarmMin = 0;
                     }
-                    else
-                    {
+                    else {
                         alarmMin += 1;
                     }
                 }
@@ -576,20 +493,15 @@ void setAlarm24()
             }
 
             // down arrow
-            case 0x50:
-            {
-                if (place == 0)
-                {
+            case 0x50: {
+                if (place == 0) {
                     alarmHour = (alarmHour - 1 + 24) % 24;
                 }
-                else
-                {
-                    if (alarmMin == 0)
-                    {
+                else {
+                    if (alarmMin == 0) {
                         alarmMin = 59;
                     }
-                    else
-                    {
+                    else {
                         alarmMin -= 1;
                     }
                 }
@@ -610,15 +522,12 @@ void setAlarm24()
 
         // if it's time to blink
         DWORD currentTime = GetTickCount();
-        if (currentTime - lastBlinkTime > blinkInterval)
-        {
+        if (currentTime - lastBlinkTime > blinkInterval) {
             lastBlinkTime = currentTime;
-            if (place == 0)
-            {
+            if (place == 0) {
                 showHour = !showHour; // blink hour
             }
-            else
-            {
+            else {
                 showMin = !showMin; // blink min
             }
         }
@@ -631,10 +540,8 @@ void setAlarm24()
 // =============================================================
 // =                         setAlarm                          =
 // =============================================================
-void setAlarm(int *clockType)
-{   
-    switch (*clockType)
-    {
+void setAlarm(int *clockType) {   
+    switch (*clockType) {
 
     // 12 hour clock
     case 0:
@@ -652,8 +559,7 @@ void setAlarm(int *clockType)
 // =                         delAlarm                          =
 // =============================================================
 
-void delAlarm(int* haveAlarm) 
-{
+void delAlarm(int* haveAlarm)  {
     system("cls");
     *haveAlarm = !(*haveAlarm);
     printf("Removed Alarm!");
@@ -664,11 +570,9 @@ void delAlarm(int* haveAlarm)
 // =============================================================
 // =                         userInput                         =
 // =============================================================
-int userInput(char *key, int *showHelp, int *clockType, int *needAlarm, int* haveAlarm)
-{
+int userInput(char *key, int *showHelp, int *clockType, int *needAlarm, int* haveAlarm) {
     // determine result
-    switch (*key)
-    {
+    switch (*key) {
     // exit
     case 'q':
         system("cls");
@@ -695,8 +599,7 @@ int userInput(char *key, int *showHelp, int *clockType, int *needAlarm, int* hav
         if (*haveAlarm == 1) {
             delAlarm(haveAlarm);
         }
-        else
-        {
+        else {
             system("cls");
             printf("No alarm set!");
             Sleep(1200);
